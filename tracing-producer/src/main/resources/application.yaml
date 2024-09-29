@@ -1,0 +1,51 @@
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        linger.ms: 1
+    topic:
+      default-topic: my-topic
+    listener:
+      observation-enabled: true
+    template:
+      observation-enabled: true
+  application:
+    name: tracing-producer
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  tracing:
+    enabled: true
+    baggage:
+      enabled: true
+      correlation:
+        enabled: true
+    propagation:
+      consume: b3, b3_multi, w3c
+      type: b3, w3c, b3_multi
+      produce: b3, b3_multi, w3c
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+
+  kafka:
+    enabled: true
+  observations:
+    annotations:
+      enabled: true
+logging:
+  level:
+    root: INFO
+    com.aabir: DEBUG
