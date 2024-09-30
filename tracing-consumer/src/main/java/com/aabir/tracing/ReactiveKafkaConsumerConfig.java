@@ -46,8 +46,8 @@ public class ReactiveKafkaConsumerConfig {
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         configProps.put(ObservationRegistry.class.getName(), registry);
-        configProps.put(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG,
-                "com.aabir.tracing.ConsumerInterceptorConfig");
+//        configProps.put(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG,
+//                "com.aabir.tracing.ConsumerInterceptorConfig");
 
         return ReceiverOptions.<String, String>create(configProps)
                 .subscription(Collections.singleton(topic));
@@ -56,9 +56,9 @@ public class ReactiveKafkaConsumerConfig {
     @Bean
     public ReactiveKafkaConsumerTemplate<String, String> reactiveKafkaConsumerTemplate(ReceiverOptions<String, String> receiverOptions,
                                                                                        ObservationRegistry observationRegistry,
-                                                                                       Tracer tracer, Propagator propagator) {
+                                                                                       PropagatingReceiverTracingObservationHandler<?> handler) {
 //        observationRegistry.observationConfig().observationHandler(new PropagatingReceiverTracingObservationHandler<>(tracer, propagator));
-        observationRegistry.observationConfig().observationHandler(new HeaderReadingHandler());
+        observationRegistry.observationConfig().observationHandler(handler);
         ObservationThreadLocalAccessor.getInstance().setObservationRegistry(observationRegistry);
         return new ReactiveKafkaConsumerTemplate<>(receiverOptions.withObservation(observationRegistry));
     }
