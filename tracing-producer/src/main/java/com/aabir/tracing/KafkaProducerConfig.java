@@ -30,17 +30,19 @@ public class KafkaProducerConfig {
         Map<String, Object> configProps = kafkaProperties.buildProducerProperties(null);
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, String.join(",", (ArrayList<String>) configProps.get(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG)));
         configProps.put(ObservationRegistry.class.getName(), registry);
-        configProps.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG,
-                "com.aabir.tracing.ProducerInterceptorConfig");
+//        configProps.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG,
+//                "com.aabir.tracing.ProducerInterceptorConfig");
         return SenderOptions.create(configProps);  // Enabling Observation
     }
 
 
     @Bean
     public ReactiveKafkaProducerTemplate<String, Object> reactiveKafkaProducerTemplate(SenderOptions<String, Object> senderOptions,
-                                                                                       ObservationRegistry registry) {
+                                                                                       ObservationRegistry registry,
+                                                                                       Tracer tracer,
+                                                                                       Propagator propagator) {
 
-        registry.observationConfig().observationHandler(new HeaderPropagatingHandler());
+        registry.observationConfig().observationHandler(new PropagatingSenderTracingObservationHandler<>(tracer, propagator));
         log.info("Producer template setup done");
         return new ReactiveKafkaProducerTemplate<>(KafkaSender.create(senderOptions.withObservation(registry)));
     }

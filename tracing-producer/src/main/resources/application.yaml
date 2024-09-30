@@ -25,14 +25,14 @@ management:
         include: "*"
   tracing:
     enabled: true
-    baggage:
-      enabled: true
-      correlation:
-        enabled: true
-    propagation:
-      consume: b3, b3_multi, w3c
-      type: b3, w3c, b3_multi
-      produce: b3, b3_multi, w3c
+#    baggage:
+#      enabled: true
+#      correlation:
+#        enabled: true
+#    propagation:
+#      consume: b3, b3_multi, w3c
+#      type: b3, w3c, b3_multi
+#      produce: b3, b3_multi, w3c
     sampling:
       probability: 1.0
 

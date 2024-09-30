@@ -10,7 +10,7 @@ import reactor.core.publisher.Hooks;
 public class TracingApplication {
 
 	public static void main(String[] args) {
-		Hooks.enableAutomaticContextPropagation();
+//		Hooks.enableAutomaticContextPropagation();
 		SpringApplication.run(TracingApplication.class, args);
 	}
 
